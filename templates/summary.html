@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Executive Summary - MBTA Subway Expansion Tool</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+
+    header {
+      background-color: #004c99;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      line-height: 1.6;
+    }
+
+    h1, h2 {
+      color: #004c99;
+    }
+
+    a.button {
+      display: inline-block;
+      margin-top: 25px;
+      background-color: #004c99;
+      color: white;
+      padding: 10px 18px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Executive Summary</h1>
+  <p>MBTA Subway Expansion Algorithm</p>
+</header>
+
+<div class="container">
+  <h2>Project Overview</h2>
+  <p>
+    This project presents a data-driven tool to support transit infrastructure decisions for the Massachusetts Bay Transportation Authority (MBTA).
+    It models neighborhood-level needs, feasibility, and cost efficiency to recommend subway and rail extension projects optimized under various planning priorities.
+  </p>
+
+  <h2>Motivation</h2>
+  <p>
+    Boston continues to face critical transit access gaps and growing congestion. Rather than relying solely on qualitative planning documents,
+    this tool introduces a quantitative algorithm to score and prioritize potential projects based on real-world metrics.
+    The goal is to help planners and decision-makers identify which projects bring the greatest benefit within a fixed budget.
+  </p>
+
+  <h2>How It Works</h2>
+  <p>
+    Each Boston neighborhood is evaluated on population, income, growth rate, distance from transit, transit dependence, and construction feasibility.
+    The tool supports three scenario modes:
+  </p>
+  <ul>
+    <li><strong>Climate Focus</strong> — prioritizes transit-dependent, lower-income communities to reduce emissions.</li>
+    <li><strong>Cost Saving</strong> — prioritizes low-cost, high-feasibility projects to maximize returns per dollar.</li>
+    <li><strong>Growth Focus</strong> — targets high-growth, underserved areas with long-term impact.</li>
+  </ul>
+
+  <p>
+    Projects are scored using a weighted algorithm and selected using a budget-constrained optimization loop. The model supports multiple build options per neighborhood (e.g., surface rail vs tunnel) and ranks them by strategic score per cost.
+  </p>
+
+  <h2>Outputs</h2>
+  <p>
+    The tool produces:
+  </p>
+  <ul>
+    <li>A ranked list of selected projects</li>
+    <li>Mode-based investment summaries</li>
+    <li>Project justifications based on equity, cost, and feasibility</li>
+    <li>A “Gap Index” measuring how close unselected neighborhoods were to qualifying</li>
+    <li>A scenario comparison table showing overlap and divergence between strategies</li>
+  </ul>
+
+  <h2>Real-World Relevance</h2>
+  <p>
+    The algorithm draws on real MBTA planning concepts like the Urban Ring and commuter upgrades. It reflects the type of scoring and filtering processes that transportation agencies use in practice. 
+    This prototype can serve as a conversation starter for integrating algorithmic thinking into city planning, particularly for climate-aware, equity-driven infrastructure investments.
+  </p>
+
+  <a href="/" class="button">← Back to Tool</a>
+</div>
+
+<footer>
+  Built by Julien Montmayeur | Python & Flask | Prototype Planning Model
+</footer>
+
+</body>
+</html>

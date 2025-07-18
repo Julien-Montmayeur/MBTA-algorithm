@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ neighborhood.name }} – MBTA Profile</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #004c99;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #004c99;
+    }
+    .stat {
+      margin-bottom: 10px;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #004c99;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ neighborhood.name }} Profile</h1>
+  </header>
+
+  <div class="container">
+    <h2>Key Statistics</h2>
+    <div class="stat"><strong>Population:</strong> {{ neighborhood.population }}</div>
+    <div class="stat"><strong>Distance from Subway:</strong> {{ neighborhood.distance_from_subway }} miles</div>
+    <div class="stat"><strong>Median Income:</strong> ${{ neighborhood.income }}</div>
+    <div class="stat"><strong>Growth Rate:</strong> {{ neighborhood.growth_rate * 100 }}%</div>
+    <div class="stat"><strong>Transit Dependence:</strong> {{ neighborhood.transit_dep * 100 }}%</div>
+    <div class="stat"><strong>Distance from Downtown:</strong> {{ neighborhood.distance_from_downtown }} miles</div>
+
+    <h2>Available Transit Expansion Modes</h2>
+    <ul>
+      {% for mode in neighborhood.modes %}
+      <li><strong>{{ mode.type.title() }}</strong>: Feasibility {{ mode.feasibility * 100 }}%, Cost ${{ mode.cost }}M</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Justification for Consideration</h2>
+    <p>{{ justification }}</p>
+    
+    <h2>Why This Project?</h2>
+    <div style="background-color: #e6f2ff; border-left: 5px solid #004c99; padding: 15px; margin-top: 15px; border-radius: 6px;">
+      <p>This neighborhood was selected based on strategic needs such as transit dependence, population growth, affordability of expansion, and integration with the broader MBTA network. The algorithm assigned this project a high benefit-to-cost score using weighted factors tailored to your selected scenario.</p>
+    </div>
+
+    <h2>Why This Neighborhood Might Be Prioritized</h2>
+    <ul>
+      {% if neighborhood.transit_dep > 0.6 %}
+        <li>🚶 High reliance on public transit</li>
+      {% endif %}
+      {% if neighborhood.income < 45000 %}
+        <li>💸 Lower-income community</li>
+      {% endif %}
+      {% if neighborhood.growth_rate > 0.012 %}
+        <li>📈 Rapid population growth</li>
+      {% endif %}
+      {% if neighborhood.distance_from_subway > 1.5 %}
+        <li>📍 Poor subway access (over 1.5 miles away)</li>
+      {% endif %}
+      {% if neighborhood.feasibility > 0.8 %}
+        <li>🛠️ High feasibility of construction</li>
+      {% endif %}
+    </ul>
+
+    {% if not (
+      neighborhood.transit_dep > 0.6 or
+      neighborhood.income < 45000 or
+      neighborhood.growth_rate > 0.012 or
+      neighborhood.distance_from_subway > 1.5 or
+      neighborhood.feasibility > 0.8
+    ) %}
+      <p>This neighborhood does not meet the top-priority criteria based on transit dependence, income, or access gaps, but may still be considered for strategic reasons.</p>
+    {% endif %}
+
+
+    <a href="/" class="back-link">← Back to Tool</a>
+  </div>
+
+</body>
+</html>

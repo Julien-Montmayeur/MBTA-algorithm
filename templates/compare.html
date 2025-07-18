@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Compare Neighborhoods</title>
+</head>
+<body>
+  <h1>Compare Two Neighborhoods</h1>
+  <form method="POST">
+    <label for="neighborhood1">Neighborhood 1:</label>
+    <select name="neighborhood1">
+      {% for n in neighborhoods %}
+        <option value="{{ n.name }}">{{ n.name }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="neighborhood2">Neighborhood 2:</label>
+    <select name="neighborhood2">
+      {% for n in neighborhoods %}
+        <option value="{{ n.name }}">{{ n.name }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Compare</button>
+  </form>
+
+  {% if result %}
+    <h2>Comparison</h2>
+    <table border="1">
+      <tr><th>Metric</th><th>{{ result.n1.name }}</th><th>{{ result.n2.name }}</th></tr>
+      <tr><td>Population</td><td>{{ result.n1.population }}</td><td>{{ result.n2.population }}</td></tr>
+      <tr><td>Income</td><td>${{ result.n1.income }}</td><td>${{ result.n2.income }}</td></tr>
+      <tr><td>Growth Rate</td><td>{{ result.n1.growth_rate }}</td><td>{{ result.n2.growth_rate }}</td></tr>
+      <tr><td>Transit Dependence</td><td>{{ result.n1.transit_dep }}</td><td>{{ result.n2.transit_dep }}</td></tr>
+      <tr><td>Distance from Downtown</td><td>{{ result.n1.distance_from_downtown }}</td><td>{{ result.n2.distance_from_downtown }}</td></tr>
+      <!-- Add more rows as needed -->
+    </table>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Methodology – MBTA Subway Expansion Tool</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #004c99;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #004c99;
+      margin-top: 30px;
+    }
+    p {
+      line-height: 1.6;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #004c99;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Methodology</h1>
+    <p>How the Subway Expansion Algorithm Works</p>
+  </header>
+
+  <div class="container">
+    <h2>Scoring Formula</h2>
+    <p>
+      Each potential project is assigned a score based on the following weighted factors:
+    </p>
+    <ul>
+      <li><strong>Transit Dependence</strong> – 30%</li>
+      <li><strong>Distance from Subway</strong> – 20%</li>
+      <li><strong>Income Level (Inverted)</strong> – 15%</li>
+      <li><strong>Population Growth Rate</strong> – 15%</li>
+      <li><strong>Construction Feasibility</strong> – 10%</li>
+      <li><strong>Distance from Downtown</strong> – 10%</li>
+    </ul>
+
+    <h2>Scenarios</h2>
+    <p>
+      The algorithm allows users to choose a planning scenario, which changes how the weights are applied:
+    </p>
+    <ul>
+      <li><strong>Climate Focus</strong>: Prioritizes transit dependence, feasibility, and low income areas.</li>
+      <li><strong>Cost Saving</strong>: Emphasizes feasibility and low-cost surface or upgrade modes.</li>
+      <li><strong>Growth Focus</strong>: Focuses on population growth and long-term expansion needs.</li>
+    </ul>
+
+    <h2>Optimization Logic</h2>
+    <p>
+      The algorithm runs a greedy budget-constrained selection: it ranks all projects by score-to-cost ratio and picks the highest-value projects until the budget is used up. This ensures maximum impact per dollar.
+    </p>
+
+    <h2>Extra Features</h2>
+    <ul>
+      <li><strong>Project Justifications</strong>: Each selected project has a one-line rationale generated based on score criteria.</li>
+      <li><strong>Gap Index</strong>: Calculates how close unselected neighborhoods came to qualifying.</li>
+      <li><strong>Scenario Comparison</strong>: Runs all three scenarios and compares total score and project overlap.</li>
+    </ul>
+
+    <a href="/" class="back-link">← Back to Main Tool</a>
+  </div>
+</body>
+</html>

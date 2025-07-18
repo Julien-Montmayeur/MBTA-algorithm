@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MBTA Subway Expansion Tool</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+
+    header {
+      background-color: #004c99;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    select, input[type=number] {
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 25px;
+      background-color: #004c99;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0066cc;
+    }
+
+    #results {
+      margin-top: 30px;
+      white-space: pre-wrap;
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: monospace;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MBTA Subway Expansion Algorithm</h1>
+    <p>Explore optimal transit projects by scenario and budget</p>
+  </header>
+
+  <div class="container">
+    <form method="post" action="/">
+      <label for="scenario">Optimization Scenario:</label>
+      <select name="scenario" id="scenario">
+        <option value="climate_focus">Climate Focus</option>
+        <option value="cost_saving">Cost Saving</option>
+        <option value="growth_focus">Growth Focus</option>
+      </select>
+      <button type="button" onclick="showScenarioModal()">What does this mean?</button>
+
+      <label for="budget">Budget Cap (in millions):</label>
+      <input type="number" name="budget" id="budget" value="1500" min="100" max="5000">
+
+      <details style="margin-top: 20px;">
+        <summary style="font-weight: bold;">Customize Scenario Weights (Advanced)</summary>
+        <div style="margin-top: 15px;">
+          <label for="w_transit_dep">Transit Dependence Weight</label>
+          <input type="number" step="0.1" name="w_transit_dep" min="0" max="3" value="1.0">
+
+          <label for="w_income">Income Weight</label>
+          <input type="number" step="0.1" name="w_income" min="0" max="3" value="1.0">
+
+          <label for="w_growth">Growth Rate Weight</label>
+          <input type="number" step="0.1" name="w_growth" min="0" max="3" value="0.7">
+
+          <label for="w_distance">Distance from Subway Weight</label>
+          <input type="number" step="0.1" name="w_distance" min="0" max="3" value="1.3">
+
+          <label for="w_feasibility">Feasibility Weight</label>
+          <input type="number" step="0.1" name="w_feasibility" min="0" max="3" value="1.4">
+
+          <label for="w_cost">Cost Weight</label>
+          <input type="number" step="0.1" name="w_cost" min="0" max="3" value="1.5">
+
+          <label for="w_population">Population Weight</label>
+          <input type="number" step="0.1" name="w_population" min="0" max="3" value="1.1">
+
+          <label for="w_future_pop">Future Pop Weight</label>
+          <input type="number" step="0.1" name="w_future_pop" min="0" max="3" value="1.2">
+        </div>
+      </details>
+
+      <button type="submit">Run Algorithm</button>
+    </form>
+    <div style="margin-top: 20px;">
+    <h3 style="color: #004c99;">Project Pages</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <a href="/summary" style="color: #004c99; font-weight: bold; text-decoration: none;">View Executive Summary</a>
+      <li><a href="/methodology" style="color: #004c99; text-decoration: none; font-weight: bold;">→ Methodology</a></li>
+      <a href="/compare" style="color: #004c99; font-weight: bold; text-decoration: none;">Compare Neighborhoods</a>
+      </ul>
+    </div>
+    {% if projects %}
+    <div id="results">
+      <h2>Selected Projects</h2>
+      <table id="projectsTable" style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)">Neighborhood</th>
+            <th onclick="sortTable(1)">Mode</th>
+            <th onclick="sortTable(2)">Score</th>
+            <th onclick="sortTable(3)">Cost (M)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in projects %}
+          <tr>
+            <td>
+              <a href="/profile/{{ p.neighborhood | lower | replace(' ', '_') }}">
+                {{ p.neighborhood }}
+              </a>
+            </td>
+            <td>{{ p.mode }}</td>
+            <td>{{ "%.2f"|format(p.score) }}</td>
+            <td>{{ p.cost }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p><strong>Total Cost:</strong> ${{ "%.1f"|format(total_cost) }}M</p>
+      <p><strong>Total Score:</strong> {{ "%.2f"|format(total_score) }}</p>
+      {% if recommendation %}
+        <h3 style="margin-top: 30px;">Model Recommendation</h3>
+        <p style="font-style: italic; color: #444;">{{ recommendation }}</p>
+      {% endif %}
+      {% if justifications %}
+        <h3>Project Justifications</h3>
+        <pre style="white-space: pre-wrap; font-family: monospace;">{{ justifications }}</pre>
+      {% endif %}
+
+      {% if gap_index %}
+        <h3>Gap Index for Unselected Neighborhoods</h3>
+        <pre style="white-space: pre-wrap; font-family: monospace;">{{ gap_index }}</pre>
+      {% endif %}
+
+      {% if summary_by_mode %}
+        <h3>Project Summary by Transit Mode</h3>
+        <pre style="white-space: pre-wrap; font-family: monospace;">{{ summary_by_mode }}</pre>
+      {% endif %}
+
+      {% if scenario_comparison %}
+        <h3>Scenario Comparison</h3>
+        <pre style="white-space: pre-wrap; font-family: monospace;">{{ scenario_comparison }}</pre>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Learn More Section (below results now) -->
+    <details style="margin-top: 40px;">
+      <summary style="font-weight: bold; font-size: 18px; cursor: pointer;">Learn More: How This Algorithm Works</summary>
+      <div style="margin-top: 15px; line-height: 1.6;">
+        <p>
+          This tool evaluates Boston neighborhoods based on their need and readiness for new subway or transit line expansions.
+          Each neighborhood is scored using factors such as population size, growth rate, income level, distance from the subway,
+          transit dependence, and construction feasibility.
+        </p>
+
+        <p>
+          For each possible project (like adding a ring line, surface rail, or tunnel), the algorithm calculates a <strong>strategic score</strong>
+          by weighing benefits (like serving low-income or transit-dependent communities) against costs and technical feasibility.
+        </p>
+
+        <p>
+          The optimization is scenario-based. You can select from:
+          <ul>
+            <li><strong>Climate Focus</strong> — Prioritizes emissions reduction and serving transit-dependent communities.</li>
+            <li><strong>Cost Saving</strong> — Prioritizes low-cost, high-feasibility projects to maximize impact per dollar.</li>
+            <li><strong>Growth Focus</strong> — Prioritizes long-term population growth and underserved expanding areas.</li>
+          </ul>
+        </p>
+
+        <p>
+          The algorithm runs a <strong>budget-constrained selection</strong>, picking projects with the best benefit-to-cost ratio
+          until the available funding is exhausted.
+        </p>
+
+        <p>
+          It also generates a <strong>project summary</strong> by transit mode, highlights <strong>justifications</strong> for selected projects,
+          and calculates a <strong>“Gap Index”</strong> for neighborhoods that weren’t selected — measuring how close they were to making the cut.
+        </p>
+
+        <p style="font-style: italic; color: #555;">
+          This project was developed by Julien Montmayeur as a prototype to support real-world transit decisions. It draws inspiration from real MBTA planning reports and was built with Python and Flask.
+        </p>
+      </div>
+    </details>
+  </div>
+
+  <footer>
+    Built by Julien Montmayeur | Powered by Flask + Python | Subway Model
+  </footer>
+  <script>
+    function sortTable(colIndex) {
+      const table = document.getElementById("projectsTable");
+      const rows = Array.from(table.rows).slice(1); // skip header
+      let switching = true;
+      let dir = "asc";
+
+      while (switching) {
+        switching = false;
+        for (let i = 0; i < rows.length - 1; i++) {
+          let x = rows[i].cells[colIndex].innerText;
+          let y = rows[i + 1].cells[colIndex].innerText;
+
+          let shouldSwitch = false;
+          let xVal = isNaN(parseFloat(x)) ? x.toLowerCase() : parseFloat(x);
+          let yVal = isNaN(parseFloat(y)) ? y.toLowerCase() : parseFloat(y);
+
+          if ((dir === "asc" && xVal > yVal) || (dir === "desc" && xVal < yVal)) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+        } else if (dir === "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+      function showScenarioModal() {
+          const scenario = document.getElementById("scenario").value;
+          let description = "";
+
+          if (scenario === "climate_focus") {
+            description = "Prioritizes reducing emissions and serving transit-dependent communities. Projects that benefit low-income, car-light neighborhoods are ranked higher.";
+          } else if (scenario === "cost_saving") {
+            description = "Prioritizes high-impact projects with low cost. Focuses on surface or upgrade options to get the most value per dollar.";
+          } else if (scenario === "growth_focus") {
+            description = "Targets areas with high population growth or development potential. Prioritizes underserved, expanding neighborhoods.";
+          }
+
+          document.getElementById("scenarioDescription").innerText = description;
+          document.getElementById("scenarioModal").style.display = "flex";
+        }
+    </script>
+  <div id="scenarioModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; max-width:600px; margin:auto; border-radius:10px; position:relative;">
+      <h2>Scenario Explanation</h2>
+      <p id="scenarioDescription"></p>
+      <button onclick="document.getElementById('scenarioModal').style.display='none'"
+        style="position:absolute; top:10px; right:10px;">X</button>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+
